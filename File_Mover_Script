@@ -1,0 +1,40 @@
+import os
+import shutil
+
+def copy_excel_files(source_dir, destination_dir):
+    # Ensure the destination folder exists
+    os.makedirs(destination_dir, exist_ok=True)
+
+    # Walk through the directory and its subdirectories
+    for root, _, files in os.walk(source_dir):
+        for file in files:
+            if file.endswith(('.xlsx', '.xlsm')) and "bidsheet" in file.lower():
+                
+                # Get the source file path
+                source_file = os.path.join(root, file)
+                
+                # Determine the parent directory relative to the source_dir
+                relative_path = os.path.relpath(root, source_dir)
+                index = relative_path.find("\\")
+                relative_path = relative_path[:index]
+        
+                
+                # Create the corresponding directory structure in the destination
+                destination_folder = os.path.join(destination_dir, relative_path)
+                os.makedirs(destination_folder, exist_ok=True)
+                
+                # Create the destination file path
+                destination_file = os.path.join(destination_folder, file)
+                
+                # Copy the file to the destination folder
+                shutil.copy2(source_file, destination_file)
+                print(f"Copied: {source_file} to {destination_file}")
+
+# Replace SOURCE_DIR with the directory you want to search
+SOURCE_DIR = r"filemover\Source"
+
+# Destination directory on your desktop
+DESTINATION_DIR = r"filemover\Bidsheets"
+
+# Run the function
+copy_excel_files(SOURCE_DIR, DESTINATION_DIR)
